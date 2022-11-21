@@ -1,24 +1,21 @@
 import React, {ReactNode, useRef, useEffect} from 'react';
 import {Animated, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {colors} from '../constants/colors';
+import {colors} from '../../../constants/colors';
 
 const BASE_HEIGHT = 60;
 
-export const GuessContainer = ({
+export const GuessButton = ({
   backgroundColor,
   children,
-  isSelected,
   onPress,
 }: {
   backgroundColor: string;
   children: ReactNode;
-  isSelected: boolean;
   onPress: () => void;
 }) => {
   const height = useRef(new Animated.Value(BASE_HEIGHT)).current;
   const viewStyle = {
     ...styles.container,
-    borderColor: isSelected ? colors.light2 : 'transparent',
     backgroundColor,
     height,
   };
@@ -63,7 +60,6 @@ export const GuessContainer = ({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 5,
-    borderWidth: 3,
     paddingHorizontal: 10,
     justifyContent: 'center',
   },
@@ -71,7 +67,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     height: BASE_HEIGHT * 1.1,
-    marginTop: 10,
-    marginHorizontal: 10,
+    marginBottom: 10,
   },
 });

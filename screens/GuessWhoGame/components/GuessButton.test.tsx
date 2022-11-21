@@ -1,19 +1,16 @@
 import {Text} from 'react-native';
 import React from 'react';
-import {GuessContainer} from './GuessContainer';
+import {GuessButton} from './GuessButton';
 import {fireEvent, render} from '@testing-library/react-native';
 
 const mockedOnPress = jest.fn();
 
-describe('GuessContainer component', () => {
+describe('GuessButton component', () => {
   it('fires its onPress method when pressed', () => {
     const {getByText} = render(
-      <GuessContainer
-        backgroundColor="blue"
-        isSelected={false}
-        onPress={mockedOnPress}>
+      <GuessButton backgroundColor="blue" onPress={mockedOnPress}>
         <Text>Cool thing</Text>
-      </GuessContainer>,
+      </GuessButton>,
     );
     fireEvent.press(getByText('Cool thing'));
     expect(mockedOnPress).toHaveBeenCalled();
