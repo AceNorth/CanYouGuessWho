@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
@@ -122,37 +114,55 @@ const jobs = [
   'robs banks',
 ];
 
-const generatePeople = (numberToGenerate: number = 1) => {
-  let numberGenerated = 0;
+const generateFourNewPeople = () => {
+  const selectedNames: string[] = [];
+  const selectedAdjectives: string[] = [];
+  const selectedJobs: string[] = [];
   const arrayOfPeople = [];
-  while (numberGenerated < numberToGenerate) {
+
+  while (selectedNames.length < 4) {
+    const randomName = getRandomOption(names);
+    if (!selectedNames.includes(randomName)) {
+      selectedNames.push(randomName);
+    }
+  }
+
+  while (selectedAdjectives.length < 4) {
+    const randomAdjective = getRandomOption(adjectives);
+    if (!selectedAdjectives.includes(randomAdjective)) {
+      selectedAdjectives.push(randomAdjective);
+    }
+  }
+
+  while (selectedJobs.length < 4) {
+    const randomJob = getRandomOption(jobs);
+    if (!selectedJobs.includes(randomJob)) {
+      selectedJobs.push(randomJob);
+    }
+  }
+
+  let currentIndex = 0;
+
+  while (currentIndex < 4) {
     arrayOfPeople.push({
-      name: getRandomWord(names),
-      adjective1: getRandomWord(adjectives),
-      adjective2: getRandomWord(jobs),
+      name: selectedNames[currentIndex],
+      adjective1: selectedAdjectives[currentIndex],
+      adjective2: selectedJobs[currentIndex],
     });
-    numberGenerated += 1;
+    currentIndex += 1;
   }
   return arrayOfPeople;
 };
 
-const getRandomWord = (wordArr: string[]) => {
+const getRandomOption = (wordArr: string[]) => {
   return wordArr[Math.floor(Math.random() * wordArr.length)];
 };
-
-const NUMBER_OF_OPTIONS = 4;
 
 const determineColorOfGuessButton = (
   isSelected: boolean,
   isCorrect: boolean,
   hasChecked: boolean,
 ) => {
-  /*
-    if is selected and hasn't checked, '#70c0e0'
-    if is selected and has checked, and is correct, gold
-    if is not selected and hasn't checked, white
-    if is not selected and has checked, and is correct, red
-  */
   if (isSelected) {
     if (hasChecked) {
       if (isCorrect) {
@@ -198,11 +208,9 @@ const App = () => {
 
   const startNewRound = async () => {
     setLoading(true);
-    const newPeople = generatePeople(NUMBER_OF_OPTIONS);
+    const newPeople = generateFourNewPeople();
     setPossiblePeople(newPeople);
-    const newSelectedPersonIndex = Math.floor(
-      Math.random() * NUMBER_OF_OPTIONS,
-    );
+    const newSelectedPersonIndex = Math.floor(Math.random() * 4);
     setSelectedPersonIndex(newSelectedPersonIndex);
     const selectedPerson = newPeople[newSelectedPersonIndex];
     setGuessIndex(-1);
@@ -231,11 +239,9 @@ const App = () => {
           </View>
           <View style={styles.imageContainer}>
             {loading ? (
-              <ActivityIndicator />
+              <ActivityIndicator size={'large'} />
             ) : (
-              <View>
-                <Image style={styles.image} source={{uri: imageUrl!}} />
-              </View>
+              <Image style={styles.image} source={{uri: imageUrl!}} />
             )}
           </View>
           <View style={styles.flexContainer4}>

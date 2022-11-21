@@ -2,20 +2,20 @@ import React, {ReactNode, useRef, useEffect} from 'react';
 import {Animated, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../constants/colors';
 
-const CONTAINER_HEIGHT = 60;
+const BASE_HEIGHT = 60;
 
 export const GuessContainer = ({
-  children,
-  onPress,
-  isSelected,
   backgroundColor,
+  children,
+  isSelected,
+  onPress,
 }: {
-  children: ReactNode;
-  onPress: () => void;
-  isSelected: boolean;
   backgroundColor: string;
+  children: ReactNode;
+  isSelected: boolean;
+  onPress: () => void;
 }) => {
-  const height = useRef(new Animated.Value(CONTAINER_HEIGHT)).current;
+  const height = useRef(new Animated.Value(BASE_HEIGHT)).current;
   const viewStyle = {
     ...styles.container,
     borderColor: isSelected ? colors.light2 : 'transparent',
@@ -24,24 +24,24 @@ export const GuessContainer = ({
   };
 
   useEffect(() => {
-    if (backgroundColor !== 'white') {
+    if (backgroundColor !== colors.gray) {
       Animated.timing(height, {
-        toValue: CONTAINER_HEIGHT * 1.2,
+        toValue: BASE_HEIGHT * 1.2,
         duration: 100,
         useNativeDriver: false,
       }).start(() => {
         Animated.timing(height, {
-          toValue: CONTAINER_HEIGHT * 0.9,
+          toValue: BASE_HEIGHT * 0.9,
           duration: 100,
           useNativeDriver: false,
         }).start(() => {
           Animated.timing(height, {
-            toValue: CONTAINER_HEIGHT * 1.1,
+            toValue: BASE_HEIGHT * 1.1,
             duration: 200,
             useNativeDriver: false,
           }).start(() => {
             Animated.timing(height, {
-              toValue: CONTAINER_HEIGHT,
+              toValue: BASE_HEIGHT,
               duration: 200,
               useNativeDriver: false,
             }).start();
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
   outerContainer: {
     display: 'flex',
     justifyContent: 'center',
-    height: CONTAINER_HEIGHT * 1.1,
-    marginTop: 5,
-    marginHorizontal: 5,
+    height: BASE_HEIGHT * 1.1,
+    marginTop: 10,
+    marginHorizontal: 10,
   },
 });
