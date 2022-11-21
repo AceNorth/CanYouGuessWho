@@ -13,6 +13,7 @@ import Config from 'react-native-config';
 import LinearGradient from 'react-native-linear-gradient';
 import {GuessContainer} from './components/GuessContainer';
 import {colors} from './constants/colors';
+import {names, adjectives, quirks} from './constants/peopleDescriptors';
 
 enum ImageDimensionOptions {
   Small = 256,
@@ -38,86 +39,10 @@ const fetchImageUrlForPrompt = async (prompt: string) => {
   return json.data[0].url;
 };
 
-const names = [
-  'Hank',
-  'Jacques',
-  'Eddie',
-  'Andy',
-  'Bernard',
-  'Dominic',
-  'Pax',
-  'Ever',
-  'Lennox',
-  'Hartley',
-  'Hudson',
-  'Mason',
-  'Logan',
-  'Peyton',
-  'Emerson',
-  'Winter',
-  'Marlowe',
-  'Lennon',
-  'Frankie',
-  'Quincy',
-  'River',
-  'Noah',
-  'Ezra',
-  'Micah',
-  'James',
-  'Silas',
-  'Charlie',
-  'Cameron',
-  'Reese',
-  'Drew',
-];
-
-const adjectives = [
-  'sociable',
-  'big-headed',
-  'optimistic',
-  'chatty',
-  'outgoing',
-  'arrogant',
-  'nasty',
-  'unpleasant',
-  'modest',
-  'generous',
-  'polite',
-  'unadventurous',
-  'unambitious',
-  'unenthusiastic',
-  'unfriendly',
-  'unhelpful',
-  'affectionate',
-  'frightening',
-  'brave',
-  'cheerful',
-  'confident',
-  'determined',
-  'easygoing',
-  'meticulous',
-];
-
-const jobs = [
-  'probably a vampire',
-  'shoplifts',
-  'a social media influencer',
-  'a model',
-  'an animal trainer',
-  'a movie star',
-  'the self-described "proud parent of two fur babies"',
-  'terrifying',
-  'a dentist',
-  'an archery enthusiast',
-  'a historical reenactor',
-  'rides a motorcycle',
-  'robs banks',
-];
-
 const generateFourNewPeople = () => {
   const selectedNames: string[] = [];
   const selectedAdjectives: string[] = [];
-  const selectedJobs: string[] = [];
+  const selectedQuirks: string[] = [];
   const arrayOfPeople = [];
 
   while (selectedNames.length < 4) {
@@ -134,10 +59,10 @@ const generateFourNewPeople = () => {
     }
   }
 
-  while (selectedJobs.length < 4) {
-    const randomJob = getRandomOption(jobs);
-    if (!selectedJobs.includes(randomJob)) {
-      selectedJobs.push(randomJob);
+  while (selectedQuirks.length < 4) {
+    const randomQuirk = getRandomOption(quirks);
+    if (!selectedQuirks.includes(randomQuirk)) {
+      selectedQuirks.push(randomQuirk);
     }
   }
 
@@ -146,8 +71,8 @@ const generateFourNewPeople = () => {
   while (currentIndex < 4) {
     arrayOfPeople.push({
       name: selectedNames[currentIndex],
-      adjective1: selectedAdjectives[currentIndex],
-      adjective2: selectedJobs[currentIndex],
+      adjective: selectedAdjectives[currentIndex],
+      quirk: selectedQuirks[currentIndex],
     });
     currentIndex += 1;
   }
@@ -158,17 +83,23 @@ const getRandomOption = (wordArr: string[]) => {
   return wordArr[Math.floor(Math.random() * wordArr.length)];
 };
 
-const determineColorOfGuessButton = (
+export const determineColorOfGuessButton = (
   isSelected: boolean,
   isCorrect: boolean,
   hasChecked: boolean,
 ) => {
+  /*
+    The guess buttons are gray by default, whether selected or unselected.
+    Once the user checks their answer:
+      if they've selected the correct answer, it turns gold.
+      if they've selected the incorrect answer, it turns red and the correct answer turns green.
+  */
   if (isSelected) {
     if (hasChecked) {
       if (isCorrect) {
-        return colors.light1;
+        return colors.gold;
       }
-      return colors.medium;
+      return colors.red;
     }
     return colors.gray;
   } else {
@@ -179,22 +110,22 @@ const determineColorOfGuessButton = (
   }
 };
 
-const generatePrompt = (
+export const generatePrompt = (
   name: string,
-  adjective1: string,
-  adjective2: string,
+  adjective: string,
+  quirk: string,
 ) => {
   return `A very detailed head-and-shoulders view of a human Pixar character named
-    ${name}, who is ${adjective1} and ${adjective2}.`;
+    ${name}, who is ${adjective} and ${quirk}.`;
 };
 
 interface Person {
   name: string;
-  adjective1: string;
-  adjective2: string;
+  adjective: string;
+  quirk: string;
 }
 
-const App = () => {
+export const App = () => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -216,8 +147,8 @@ const App = () => {
     setGuessIndex(-1);
     const prompt = generatePrompt(
       selectedPerson.name,
-      selectedPerson.adjective1,
-      selectedPerson.adjective2,
+      selectedPerson.adjective,
+      selectedPerson.quirk,
     );
     const url = await fetchImageUrlForPrompt(prompt);
     setImageUrl(url);
@@ -248,6 +179,7 @@ const App = () => {
             {possiblePeople.map((person, index) => {
               return (
                 <GuessContainer
+                  key={person.name}
                   backgroundColor={determineColorOfGuessButton(
                     guessIndex === index,
                     correctAnswerIndex === index,
@@ -256,8 +188,7 @@ const App = () => {
                   isSelected={guessIndex === index}
                   onPress={() => guess(index)}>
                   <Text style={styles.guessText}>
-                    {person.name}, who is {person.adjective1} and{' '}
-                    {person.adjective2}
+                    {person.name}, who is {person.adjective} and {person.quirk}
                   </Text>
                 </GuessContainer>
               );
@@ -313,10 +244,6 @@ const styles = StyleSheet.create({
   guessText: {
     fontSize: 16,
     fontFamily: 'Futura',
-  },
-  animation: {
-    position: 'absolute',
-    bottom: -200,
   },
 });
 

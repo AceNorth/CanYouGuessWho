@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@testing-library/react-native": "^11.5.0",
     "react": "18.1.0",
     "react-native": "0.70.6",
     "react-native-config": "^1.4.11",
@@ -32,6 +33,14 @@
     "typescript": "^4.9.3"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native-config)/"
+  ],
+    "timers": "fake"
   }
 }
